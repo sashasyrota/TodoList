@@ -7,7 +7,7 @@
 {% block content %}
   <h1>
     TODO list
-    <a href="#" class="btn btn-primary link-to-page">
+    <a href="{% url 'todo:task_create' %}" class="btn btn-primary link-to-page">
       Add task
     </a>
   </h1>
@@ -18,19 +18,30 @@
       <p>
         <strong>{{ task.content }}</strong>
         {% if task.done %}
-          <a href="#" class="btn btn-secondary link-to-page">
+          <a href="{% url 'todo:task_complete' pk=task.id %}" class="btn btn-secondary link-to-page">
             Undo
           </a>
           <strong class="green">Done</strong>
         {% else %}
           <strong class="red">Not done</strong>
-          <a href="#" class="btn btn-success link-to-page">
+          <a href="{% url 'todo:task_complete' pk=task.id %}" class="btn btn-success link-to-page">
             Complete
           </a>
         {% endif %}
       </p>
-      <p>Created: {{ task.created_at }}</p>
-      <p>{{ task.tags }}</p>
+      <p>
+        Created: {{ task.created_at }}
+        {% if task.deadline %}
+          | Deadline: {{ task.deadline }}
+        {% endif %}
+      </p>
+      <p>
+        {% for tag in task.tags.all %}
+          {{ tag }}
+        {% endfor %}
+        <a href="{% url 'todo:task_update' pk=task.id %}">Update</a>
+        <a href="{% url 'todo:task_delete' pk=task.id %}">Delete</a>
+      </p>
       <hr>
     {% endfor %}
   {% else %}
