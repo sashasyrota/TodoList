@@ -1,7 +1,13 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView
+from django.views import View
+from django.views.generic import (
+    CreateView,
+    UpdateView,
+    DeleteView,
+    ListView
+)
 
 from todo.forms import TaskForm
 from todo.models import Task, Tag
@@ -10,22 +16,20 @@ from todo.models import Task, Tag
 def index(request):
     task_list = Task.objects.all()
 
-    context = {
-        'task_list': task_list
-    }
+    context = {"task_list": task_list}
 
     return render(request, "todo/index.html", context=context)
 
 
-def task_complete_view(request, pk) -> HttpResponse:
-    task = Task.objects.get(pk=pk)
-    if task.done:
-        task.done = False
-    else:
-        task.done = True
-    task.save()
-
-    return HttpResponseRedirect(reverse_lazy("todo:index"))
+class TaskCompleteView(View):
+    def get(self, request, pk):
+        task = Task.objects.get(pk=pk)
+        if task.done:
+            task.done = False
+        else:
+            task.done = True
+        task.save()
+        return HttpResponseRedirect(reverse_lazy("todo:index"))
 
 
 class TaskCreateView(CreateView):
