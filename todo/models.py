@@ -13,7 +13,7 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField(null=True)
     done = models.BooleanField(default=False)
-    tags = models.ManyToManyField(Tag, related_name='tasks')
+    tags = models.ManyToManyField(Tag, related_name="tasks")
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
